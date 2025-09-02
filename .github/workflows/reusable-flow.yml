@@ -7,8 +7,14 @@ on:
         required: false
         type: string
         default: 'dist-files'
+    outputs:
+      result:
+        description: 'Result from the deployment step'
+        value: ${{ jobs.deploy.outputs.outcome }}
 jobs:
   deploy:
+    outputs:
+      outcome: ${{ steps.set-result.outputs.step-result }}
     runs-on: ubuntu-latest
     steps:
       - name: Get build artifacts
@@ -19,3 +25,6 @@ jobs:
         run: ls
       - name: Deployment step
         run: echo "This is a reusable workflow deployment step."
+      - name: Set result  
+        id: set-result
+        run: echo "step-result=success" >> $GITHUB_OUTPUT
